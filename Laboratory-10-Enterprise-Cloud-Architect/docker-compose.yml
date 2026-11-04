@@ -1,0 +1,62 @@
+# =============================================================================
+# StratusForge Systems - Enterprise Cloud Architect (Mission 10)
+# Multi-tier stack: Nextcloud (web/app tier) + MariaDB (data tier)
+# Persistent volumes ensure data survives VM reboots and container recreation.
+# =============================================================================
+
+services:
+
+  db:
+    image: mariadb:11
+    container_name: stratusforge_db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: nextcloud:29-apache
+    container_name: stratusforge_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
+      MYSQL_USER: ${MARIADB_USER}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      NEXTCLOUD_TRUSTED_DOMAINS: "localhost 192.168.56.10"
+    volumes:
+      - nc_data:/var/www/html
+    networks:
+      - backend
+      - frontend
+
+volumes:
+  mariadb_data:
+    driver: local
+  nc_data:
+    driver: local
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
