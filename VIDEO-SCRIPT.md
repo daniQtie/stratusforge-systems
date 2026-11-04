@@ -20,8 +20,8 @@
 Buksan **https://killercoda.com/playgrounds/scenario/ubuntu**, click START, tapos:
 
 ```bash
-git clone https://github.com/daniQtie/cloud-computing-course.git
-cd cloud-computing-course/cloudnova-app
+git clone https://github.com/daniQtie/stratusforge-systems.git
+cd stratusforge-systems/cloudnova-app
 chmod +x deploy.sh backup.sh
 ./deploy.sh
 sudo /usr/local/bin/cloudnova-backup.sh
