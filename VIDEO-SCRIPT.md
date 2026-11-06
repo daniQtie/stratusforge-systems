@@ -21,7 +21,23 @@ chmod +x deploy.sh backup.sh
 ./deploy.sh
 ```
 
-Hintayin "Deployment complete" (1–3 min kasi nag-i-install pa si Nextcloud) bago mag-record.
+Hintayin "Deployment complete" (1–3 min kasi nag-i-install pa si Nextcloud).
+
+Tapos i-brand ang Nextcloud bilang StratusForge:
+
+```bash
+sudo docker exec -u www-data stratusforge_web php occ theming:config name "StratusForge Systems"
+sudo docker exec -u www-data stratusforge_web php occ theming:config slogan "Private Cloud Platform"
+sudo docker exec -u www-data stratusforge_web php occ theming:config color "#ff6b35"
+```
+
+Buksan ang website: sa KillerCoda, click **"+"** → **Select port to view on Host 1** → `3000`. Mag-login gamit ang `admin` / `ChangeThisAdminP@ss_2026`. Dapat "StratusForge Systems" at orange na ang kulay.
+
+Para may laman na ang backup folder bago mag-record:
+
+```bash
+sudo STACK_DIR=$(pwd) /usr/local/bin/stratusforge-backup.sh
+```
 
 ---
 
@@ -59,7 +75,7 @@ local   stratusforge-app_mariadb_data
 local   stratusforge-app_nc_data
 ```
 
-Tapos buksan ang port 3000 sa KillerCoda ("+" → Select port → `3000`) para ipakita ang **Nextcloud login page**. Pwede pang mag-login (`admin` / password sa `.env`) para makita ang Files dashboard.
+Tapos lumipat sa website tab (port 3000) at ipakita ang **StratusForge Systems** dashboard (Nextcloud na naka-brand). I-click ang Files icon sa taas para makita ang file storage.
 
 ### Script
 > "Dito sa `docker compose ps`, nakikita niyo dalawang containers na tumatakbo —
