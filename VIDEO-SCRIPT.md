@@ -8,11 +8,6 @@
 
 ---
 
-## ⚠️ IMPORTANT — Hindi i-show sa video
-- ❌ Huwag buksan port 3000 sa KillerCoda browser (UI is the Next.js dashboard, hindi Nextcloud login)
-- ❌ Huwag `cat` ng `Dockerfile` o `docker-compose.yml` ng cloudnova-app
-- ✅ Puro terminal commands lang nasa script na 'to
-
 ---
 
 ## 🎬 Pre-Recording Setup
@@ -24,10 +19,9 @@ git clone https://github.com/daniQtie/stratusforge-systems.git
 cd stratusforge-systems/cloudnova-app
 chmod +x deploy.sh backup.sh
 ./deploy.sh
-sudo /usr/local/bin/cloudnova-backup.sh
 ```
 
-Hintayin "Deployment complete" at tumakbo yung manual backup bago mag-record.
+Hintayin "Deployment complete" (1–3 min kasi nag-i-install pa si Nextcloud) bago mag-record.
 
 ---
 
@@ -52,17 +46,20 @@ Hintayin "Deployment complete" at tumakbo yung manual backup bago mag-record.
 ### Commands
 ```bash
 sudo docker compose ps
-sudo docker volume ls | grep cloudnova
+sudo docker volume ls | grep -E "nc_data|mariadb_data"
 ```
 
 ### Expected output
 ```
-NAME            IMAGE                  STATUS                 PORTS
-cloudnova_db    postgres:16-alpine     Up (healthy)           5432/tcp
-cloudnova_web   cloudnova-web:1.0      Up (healthy)           0.0.0.0:3000->3000/tcp
+NAME               IMAGE                 STATUS            PORTS
+stratusforge_db    mariadb:11            Up (healthy)      3306/tcp
+stratusforge_web   nextcloud:29-apache   Up                0.0.0.0:3000->80/tcp
 
-local   cloudnova-app_pg_data
+local   cloudnova-app_mariadb_data
+local   cloudnova-app_nc_data
 ```
+
+Tapos buksan ang port 3000 sa KillerCoda ("+" → Select port → `3000`) para ipakita ang **Nextcloud login page**. Pwede pang mag-login (`admin` / password sa `.env`) para makita ang Files dashboard.
 
 ### Script
 > "Dito sa `docker compose ps`, nakikita niyo dalawang containers na tumatakbo —
@@ -72,9 +69,7 @@ local   cloudnova-app_pg_data
 > internal lang sa Docker network for security.
 >
 > At sa baba, nakikita ang persistent volume na `nc_data` — dito nakatago ang user files,
-> at nabubuhay kahit i-reboot ang server."
-
-> 💡 Note: Pag sinabi mo "stratusforge_db" at "nc_data" habang nasa screen ay "cloudnova_db" at "cloudnova-app_pg_data," baka mapansin ni Ma'am. **Mas safe kung sabihin lang ang generic na "DB container" at "web container" — hindi binanggit ang specific na pangalan.**
+> at nabubuhay kahit i-reboot ang server. At eto ang live Nextcloud login page namin."
 
 ---
 
@@ -110,20 +105,22 @@ Default: deny (incoming), allow (outgoing)
 ### Commands
 ```bash
 sudo crontab -l
-ls -lh /var/backups/cloudnova/
-tail -n 8 /var/log/cloudnova-backup.log
+sudo STACK_DIR=$(pwd) /usr/local/bin/stratusforge-backup.sh
+ls -lh /var/backups/stratusforge/
 ```
 
 ### Expected output
 ```
-0 2 * * *  /usr/local/bin/cloudnova-backup.sh ...
+0 2 * * *  STACK_DIR=... /usr/local/bin/stratusforge-backup.sh >> /var/log/stratusforge-backup.log 2>&1
 
--rw-r--r-- 1 root root 1.2K Nov  4 ...  db_2026-11-04_....sql.gz
--rw-r--r-- 1 root root 2.1M Nov  4 ...  web_2026-11-04_....tar.gz
+[... ] === Starting StratusForge backup run ===
+[... ] Dumping MariaDB to /var/backups/stratusforge/db_....sql.gz
+[... ] Health check: Nextcloud is responding on :3000 (OK)
+[... ] Backup complete. DB=...  Nextcloud=...
+[... ] === Finished StratusForge backup run ===
 
-[2026-11-04 ...] === Starting backup run ===
-[2026-11-04 ...] Backup complete. DB=1.2K
-[2026-11-04 ...] === Finished backup run ===
+-rw-r--r-- 1 root root ...  db_....sql.gz
+-rw-r--r-- 1 root root ...  nc_....tar.gz
 ```
 
 ### Script
@@ -159,7 +156,6 @@ tail -n 8 /var/log/cloudnova-backup.log
 ## 💡 Tips
 - Terminal zoom (Ctrl + +) sa KillerCoda browser for readable text
 - Mag-rehearse muna nang hindi nag-rere-record
-- Pag nag-ask si Ma'am ng UI: *"Infrastructure po yung graded for this mission, Ma'am. Sa documentation nakalagay ang Nextcloud login procedure."*
 
 ---
 
