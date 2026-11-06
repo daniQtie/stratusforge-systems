@@ -16,7 +16,7 @@ Buksan **https://killercoda.com/playgrounds/scenario/ubuntu**, click START, tapo
 
 ```bash
 git clone https://github.com/daniQtie/stratusforge-systems.git
-cd stratusforge-systems/cloudnova-app
+cd stratusforge-systems/stratusforge-app
 chmod +x deploy.sh backup.sh
 ./deploy.sh
 ```
@@ -55,8 +55,8 @@ NAME               IMAGE                 STATUS            PORTS
 stratusforge_db    mariadb:11            Up (healthy)      3306/tcp
 stratusforge_web   nextcloud:29-apache   Up                0.0.0.0:3000->80/tcp
 
-local   cloudnova-app_mariadb_data
-local   cloudnova-app_nc_data
+local   stratusforge-app_mariadb_data
+local   stratusforge-app_nc_data
 ```
 
 Tapos buksan ang port 3000 sa KillerCoda ("+" → Select port → `3000`) para ipakita ang **Nextcloud login page**. Pwede pang mag-login (`admin` / password sa `.env`) para makita ang Files dashboard.

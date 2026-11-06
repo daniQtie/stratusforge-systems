@@ -7,13 +7,13 @@ Private-cloud platform for CCM101 Mission 10 — Enterprise Cloud Architect.
 
 ## Folders
 - `Laboratory-10-Enterprise-Cloud-Architect/` — submission files
-- `cloudnova-app/` — web application source + Docker setup
+- `stratusforge-app/` — web application source + Docker setup
 - `VIDEO-SCRIPT.md` — presentation rehearsal script
 
 ## Quick Deploy
 ```bash
 git clone https://github.com/daniQtie/stratusforge-systems.git
-cd stratusforge-systems/cloudnova-app
+cd stratusforge-systems/stratusforge-app
 chmod +x deploy.sh backup.sh
 ./deploy.sh
 ```

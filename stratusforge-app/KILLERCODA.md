@@ -1,4 +1,4 @@
-# CloudNova — KillerCoda Deployment Guide
+# StratusForge — KillerCoda Deployment Guide
 
 Deploy the full stack on a fresh browser-based Ubuntu sandbox in under 5 minutes.
 Perfect for the **live defense / video demo** — no local VM, no storage needed.
@@ -30,7 +30,7 @@ Paste into the terminal:
 
 ```bash
 git clone https://github.com/<your-github-user>/CCM101-jentorres.git
-cd CCM101-jentorres/cloudnova-app
+cd CCM101-jentorres/stratusforge-app
 ```
 
 > Replace `<your-github-user>` with the actual GitHub username.
@@ -56,7 +56,7 @@ Expected final output:
 Deployment complete
 Web UI: http://172.17.0.1:3000
 Logs:   sudo docker compose logs -f
-Backup: sudo /usr/local/bin/cloudnova-backup.sh
+Backup: sudo /usr/local/bin/stratusforge-backup.sh
 ```
 
 ---
@@ -64,7 +64,7 @@ Backup: sudo /usr/local/bin/cloudnova-backup.sh
 ## Step 4 — Open the app in the browser
 
 In KillerCoda, click the **"+"** tab bar → **"Select port to view on Host 1"** → type `3000`.
-The CloudNova landing page should load with the team members and live status cards.
+The StratusForge landing page should load with the team members and live status cards.
 
 ---
 
@@ -75,7 +75,7 @@ Run these in order and screen-record each command's output:
 ### 5.1 Multi-tier + persistent volumes
 ```bash
 sudo docker compose ps
-sudo docker volume ls | grep cloudnova
+sudo docker volume ls | grep stratusforge
 ```
 
 ### 5.2 Firewall (default deny)
@@ -86,8 +86,8 @@ sudo ufw status verbose
 ### 5.3 Automation (bash + cron)
 ```bash
 sudo crontab -l
-sudo /usr/local/bin/cloudnova-backup.sh
-ls -lh /var/backups/cloudnova/
+sudo /usr/local/bin/stratusforge-backup.sh
+ls -lh /var/backups/stratusforge/
 ```
 
 ### 5.4 Persistence proof
